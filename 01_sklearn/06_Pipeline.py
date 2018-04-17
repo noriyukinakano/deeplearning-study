@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score
 from mpl_toolkits.mplot3d import axes3d
 
-original_df = pd.read_csv('/usr/local/src/20180417_test.csv')
+original_df = pd.read_csv('/usr/local/src/test.csv')
 print('original_df shape: {}'.format(original_df.shape))
 original_df.stage.value_counts()
 
