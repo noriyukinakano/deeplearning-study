@@ -24,10 +24,10 @@ original_df.stage.value_counts()
 target_df = original_df.drop(original_df.columns[np.isnan(original_df).any()], axis=1)
 print('target_df shape: {}'.format(target_df.shape))
 
-y = pd.Series(target_df.stage)
+y = pd.Series(target_df.action)
 len(y)
 
-X = target_df.drop(["stage","rowid"], axis=1).iloc[:,0:50]
+X = target_df.drop(["action","stage","rowid"], axis=1).iloc[:,0:50]
 len(X)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
