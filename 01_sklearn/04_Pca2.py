@@ -43,17 +43,11 @@ print('X_train_pca shape: {}\n'.format(X_train_pca.shape))
 print('explained variance ratio: {}\n'.format(pca.explained_variance_ratio_))
 
 temp = pd.DataFrame(X_train_pca)
-temp['stage'] = y_train.values
-stage_1 = temp[temp['stage'] == 1]
-stage_2 = temp[temp['stage'] == 2]
-stage_3 = temp[temp['stage'] == 3]
-stage_4 = temp[temp['stage'] == 4]
-stage_5 = temp[temp['stage'] == 5]
-plt.scatter(x=stage_1[0], y=stage_1[1], marker='.')
-plt.scatter(x=stage_2[0], y=stage_2[1], marker='o')
-plt.scatter(x=stage_3[0], y=stage_3[1], marker='v')
-plt.scatter(x=stage_4[0], y=stage_4[1], marker='s')
-plt.scatter(x=stage_5[0], y=stage_5[1], marker='+')
+temp['action'] = y_train.values
+action_0 = temp[temp['action'] == 0]
+action_1 = temp[temp['action'] == 1]
+plt.scatter(x=action_0[0], y=action_0[1], marker='.')
+plt.scatter(x=action_1[0], y=action_1[1], marker='o')
 
 plt.xlabel('PC 1')
 plt.ylabel('PC 2')

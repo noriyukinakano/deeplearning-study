@@ -43,20 +43,14 @@ print('X_train_pca shape: {}\n'.format(X_train_pca.shape))
 print('explained variance ratio: {}\n'.format(pca.explained_variance_ratio_))
 
 temp = pd.DataFrame(X_train_pca)
-temp['stage'] = y_train.values
-stage_1 = temp[temp['stage'] == 1]
-stage_2 = temp[temp['stage'] == 2]
-stage_3 = temp[temp['stage'] == 3]
-stage_4 = temp[temp['stage'] == 4]
-stage_5 = temp[temp['stage'] == 5]
+temp['action'] = y_train.values
+action_0 = temp[temp['action'] == 0]
+action_1 = temp[temp['action'] == 1]
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection="3d")
-ax.scatter(stage_1[0],stage_1[1], stage_1[2], marker='.')
-ax.scatter(stage_2[0],stage_2[1], stage_2[2], marker='o')
-ax.scatter(stage_3[0],stage_3[1], stage_3[2], marker='v')
-ax.scatter(stage_4[0],stage_4[1], stage_4[2], marker='s')
-ax.scatter(stage_5[0],stage_5[1], stage_5[2], marker='+')
+ax.scatter(action_0[0],action_0[1], action_0[2], marker='.')
+ax.scatter(action_1[0],action_1[1], action_1[2], marker='o')
 ax.set_xlabel('PC 1')
 ax.set_ylabel('PC 2')
 ax.set_zlabel('PC 3')
