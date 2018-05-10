@@ -1,4 +1,5 @@
-# 前処理　第1章〜pandaの操作〜
+
+# 前処理　第1章〜pandasの操作〜
 
 ## 準備
 対象データのダウンロードをおこないましょう。
@@ -102,9 +103,7 @@ deleted_at
 [500 rows x 15 columns]
 
 >>> orders_original_df = pd.read_csv('/usr/local/src/orders.csv')
-
-
-
+>
        id  user_id                           product  price  \
 0     103       53         Beer - Upper Canada Lager   2905
 1     104      304     Muffin - Blueberry Individual   9035
@@ -545,71 +544,47 @@ df = df.interpolate(method='values') #値に欠損値がある場合に
 ## 集計するための前処理1
 
 ```
->>> orders_groupby_user_df =  orders_original_df.groupby('user_id').size().to_frame().reset_index()
->>> orders_groupby_user_df = orders_groupby_user_df.join(orders_original_df.groupby('user_id')['price'].sum(), how='inner')
+>>> orders_groupby_user_df = orders_original_df.groupby('user_id')['id'].count().to_frame().reset_index()
+>>> orders_groupby_user_sum_df = orders_original_df.groupby('user_id')['price'].sum().to_frame().reset_index()
+>>> orders_groupby_user_df = pd.merge(orders_groupby_user_df, orders_groupby_user_sum_df, how="left", on="user_id")
 >>> orders_groupby_user_df.columns = ['id', 'order_count', 'ltv']
->>> orders_groupby_user_df.head(3)
-   id  order_count    ltv
-1   2            3  13910
-2   3            4   8859
-3   4            1  21042
+    id  order_count    ltv
+0   1            2  13910
+1   2            3   8859
+2   3            4  21042
 
->>> users_original_df.join(orders_groupby_user_df)
->>> users_with_ltv_df = pd.merge(users_original_df, orders_groupby_user_df, how='left')
->>> users_with_ltv_df = pd.merge(users_original_df, orders_groupby_user_df, how='left')
+>>> users_with_ltv_df =  pd.merge(users_original_df, orders_groupby_user_df, how='left', on="id")
 >>> users_with_ltv_df.describe()
-id         age  interpolate_age  order_count           ltv
-count  500.000000  498.000000       500.000000   385.000000    385.000000
-mean   250.500000   54.891566        54.896000     2.272727  11341.763636
-std    144.481833   25.884442        25.851243     1.309385   8184.164586
-min      1.000000   13.000000        13.000000     1.000000      1.000000
-25%    125.750000   31.250000        31.750000     1.000000   5426.000000
-50%    250.500000   55.000000        55.000000     2.000000   9683.000000
-75%    375.250000   79.000000        79.000000     3.000000  15591.000000
-max    500.000000   98.000000        98.000000     7.000000  45361.000000
+              id         age  order_count           ltv
+count  500.000000  498.000000   439.000000    439.000000
+mean   250.500000   54.891566     2.277904  11429.535308
+std    144.481833   25.884442     1.298133   8341.578888
+min      1.000000   13.000000     1.000000      1.000000
+25%    125.750000   31.250000     1.000000   5345.000000
+50%    250.500000   55.000000     2.000000   9538.000000
+75%    375.250000   79.000000     3.000000  15693.000000
+max    500.000000   98.000000     7.000000  45361.000000
 
 >>> users_with_ltv_df .head(3)
-id    name name_yomi                        email gender   age   birthday  \
-0   1  菅澤 菜々美  すがさわ ななみ  sugasawa_nanami@example.com      女  24.0   1994/4/3
-1   2   早美 寿明  はやみ としあき  hayami_toshiaki@example.com      男  81.0   1936/5/6
-2   3   小高 美咲   こだか みさき    kodaka_misaki@example.com      女  83.0  1934/9/12
-
-marriage pref           tel         mobile communication_carrier  \
-0       既婚  福岡県  076-574-8128  080-5780-6228                    au
-1       既婚  京都府  030-360-3241  080-7765-4316                ソフトバンク
-2       既婚  石川県  097-756-3099  080-2275- 338                   ドコモ
-
-         created_at     last_login_in_at           deleted_at  \
-0  2016/04/02 20:04:14  2017/06/23 22:57:56                  NaN
-1   2016/04/03 4:58:21  2017/06/22 12:58:26  2018/04/17 23:52:26
-2   2016/04/03 8:06:23   2017/06/04 6:26:15                  NaN
-
-interpolate_age  order_count      ltv
-0             24.0          NaN      NaN
-1             81.0          3.0  13910.0
-2             83.0          4.0   8859.0
-
->>> users_with_ltv_df[['order_count','ltv']] = users_with_ltv_df[['order_count','ltv']].fillna(0)
->>> users_with_ltv_df.head(3)
     id    name name_yomi                        email gender   age   birthday  \
 0   1  菅澤 菜々美  すがさわ ななみ  sugasawa_nanami@example.com      女  24.0   1994/4/3
 1   2   早美 寿明  はやみ としあき  hayami_toshiaki@example.com      男  81.0   1936/5/6
 2   3   小高 美咲   こだか みさき    kodaka_misaki@example.com      女  83.0  1934/9/12
 
-  marriage pref           tel         mobile communication_carrier  \
+      marriage pref           tel         mobile communication_carrier  \
 0       既婚  福岡県  076-574-8128  080-5780-6228                    au
 1       既婚  京都府  030-360-3241  080-7765-4316                ソフトバンク
 2       既婚  石川県  097-756-3099  080-2275- 338                   ドコモ
 
-            created_at     last_login_in_at           deleted_at  \
-0  2016/04/02 20:04:14  2017/06/23 22:57:56                  NaN
-1   2016/04/03 4:58:21  2017/06/22 12:58:26  2018/04/17 23:52:26
-2   2016/04/03 8:06:23   2017/06/04 6:26:15                  NaN
+         created_at     last_login_in_at           deleted_at  order_count  \
+0  2016/04/02 20:04:14  2017/06/23 22:57:56                  NaN          2.0
+1   2016/04/03 4:58:21  2017/06/22 12:58:26  2018/04/17 23:52:26          3.0
+2   2016/04/03 8:06:23   2017/06/04 6:26:15                  NaN          4.0
 
-   interpolate_age  order_count      ltv
-0             24.0          0.0      0.0
-1             81.0          3.0  13910.0
-2             83.0          4.0   8859.0
+    ltv
+0  13910.0
+1   8859.0
+2  21042.0
 
 >>> users_with_ltv_df.to_csv('/usr/local/src/users_with_ltv.csv', index=False)
 ```
@@ -631,11 +606,13 @@ gender
 女                 13.0  98.0
 男                 13.0  98.0
 
->>> users_gender_age_df = users_with_ltv_df[['gender','interpolate_age','communication_carrier','marriage','pref','order_count','ltv']]
+>>> users_gender_age_df = users_with_ltv_df[['gender','age','communication_carrier','marriage','pref','order_count','ltv']]
+>>> users_gender_age_df[['ltv']] = users_gender_age_df[['ltv']].fillna(0)
+>>> users_gender_age_df[['order_count']] = users_gender_age_df[['order_count']].fillna(0)
 
 >>> print(pd.crosstab(users_gender_age_df.gender, users_gender_age_df.order_count))
 
->>> print(pd.crosstab(users_gender_age_df.pref, users_gender_age_df.gender))
+>>> print(pd.crosstab(users_gender_age_df.pref, users_gender_age_df.gender).head(3))
 gender   女   男
 pref
 三重県      6   4
@@ -670,7 +647,7 @@ pref
   else:
     return '100-'
 
->>> users_gender_age_df['byage'] = users_gender_age_df['interpolate_age'].apply(age_class)
+>>> users_gender_age_df['byage'] = users_gender_age_df['age'].apply(age_class).to_frame()
 >>> print(pd.crosstab([users_gender_age_df['pref']], [users_gender_age_df['gender'], users_gender_age_df['byage']]))
 
 ```
