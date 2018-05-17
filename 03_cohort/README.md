@@ -164,9 +164,9 @@ cohort_group order_period
 
 ```
 >>> def cohort_period(df):
-...   df['cohort_period'] = np.arange(len(df)) + 1
-...   return df
-...
+      df['cohort_period'] = np.arange(len(df)) + 1
+      return df
+
 >>> cohorts = cohorts.groupby(level=0).apply(cohort_period)
 >>> cohorts.head(3)
                            total_users  total_orders  price  cohort_period
@@ -273,6 +273,8 @@ cohort_group order_period
 7      2016-05      2016-05            5             7  46339              1
 8      2016-05      2017-04            1             1   2905              2
 9      2016-05      2017-05            1             1   7674              3
+
+>>> cohorts.set_index(['cohort_group','cohort_period'],inplace=True)
 
 >>> cohorts.head(10)
                            order_period  total_users  total_orders  price
